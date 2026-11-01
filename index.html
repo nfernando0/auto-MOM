@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto MOM System – Minutes of Meeting Otomatis</title>
+  <meta name="description" content="Sistem pembuatan Minutes of Meeting (MOM) otomatis berbasis suara dengan transkripsi real-time, identifikasi pembicara, dan export PDF/Word." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="url(#lg1)" stroke-width="2"/>
+            <circle cx="14" cy="14" r="4" fill="url(#lg1)"/>
+            <path d="M14 7V5M14 23V21M7 14H5M23 14H21" stroke="url(#lg1)" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00d4aa"/>
+                <stop offset="1" stop-color="#7c3aed"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">Auto MOM</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+
+    <button class="new-meeting-btn" id="newMeetingBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Meeting Baru
+    </button>
+
+    <div class="sidebar-section">
+      <span class="sidebar-section-title">History Meeting</span>
+      <div class="meeting-list" id="meetingList"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-footer-btn" id="settingsBtn" title="Pengaturan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><circle cx="12" cy="12" r="9"/></svg>
+        <span>Pengaturan</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-left">
+        <h1 class="meeting-title-display" id="meetingTitleDisplay">Meeting Baru</h1>
+        <span class="meeting-date-display" id="meetingDateDisplay"></span>
+      </div>
+      <div class="header-right">
+        <div class="recording-badge hidden" id="recordingBadge">
+          <span class="rec-dot"></span>
+          <span class="rec-label">LIVE REC</span>
+          <span class="rec-timer" id="recTimer">00:00</span>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" id="exportBtn" title="Export MOM">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="btn-icon" id="printBtn" title="Cetak MOM">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEW: SETUP -->
+    <section class="view active" id="viewSetup">
+      <div class="setup-container">
+        <div class="setup-hero">
+          <div class="hero-icon-wrapper">
+            <div class="hero-icon-pulse"></div>
+            <svg class="hero-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#hg)" stroke-width="1.5">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+              <defs>
+                <linearGradient id="hg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#00d4aa"/>
+                  <stop offset="1" stop-color="#7c3aed"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h2 class="setup-title">Buat Minutes of Meeting Otomatis</h2>
+          <p class="setup-subtitle">Rekam, transkripsi, dan buat MOM profesional secara real-time menggunakan suara Anda</p>
+        </div>
+
+        <div class="setup-form glass-card">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="meetingTitle" class="form-label">Judul Meeting <span class="req">*</span></label>
+              <input type="text" id="meetingTitle" class="form-input" placeholder="Contoh: Rapat Koordinasi Q4 2024" />
+            </div>
+            <div class="form-group">
+              <label for="meetingDate" class="form-label">Tanggal &amp; Waktu</label>
+              <input type="datetime-local" id="meetingDate" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="meetingLocation" class="form-label">Lokasi / Platform</label>
+              <input type="text" id="meetingLocation" class="form-input" placeholder="Contoh: Zoom, Ruang Rapat A" />
+            </div>
+            <div class="form-group">
+              <label for="meetingFacilitator" class="form-label">Fasilitator / Ketua Rapat</label>
+              <input type="text" id="meetingFacilitator" class="form-input" placeholder="Nama fasilitator" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Peserta Rapat</label>
+            <div class="participants-input-wrapper">
+              <input type="text" id="participantInput" class="form-input" placeholder="Ketik nama peserta, tekan Enter" />
+              <button class="btn-add-participant" id="addParticipantBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+            <div class="participants-tags" id="participantsTags"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="agendaInput" class="form-label">Agenda Meeting</label>
+            <textarea id="agendaInput" class="form-input form-textarea" placeholder="Tuliskan agenda meeting (opsional)..." rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Template MOM</label>
+            <div class="template-selector" id="templateSelector">
+              <button class="template-btn active" data-template="standard">
+                <span class="template-icon">📋</span>
+                <span>Standard</span>
+              </button>
+              <button class="template-btn" data-template="formal">
+                <span class="template-icon">🏛️</span>
+                <span>Formal</span>
+              </button>
+              <button class="template-btn" data-template="agile">
+                <span class="template-icon">⚡</span>
+                <span>Agile / Scrum</span>
+              </button>
+              <button class="template-btn" data-template="simple">
+                <span class="template-icon">📝</span>
+                <span>Sederhana</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Bahasa Transkripsi</label>
+            <div class="language-selector">
+              <button class="lang-btn active" data-lang="id-ID" id="langId">🇮🇩 Indonesia</button>
+              <button class="lang-btn" data-lang="en-US" id="langEn">🇺🇸 English</button>
+              <button class="lang-btn" data-lang="auto" id="langAuto">🌐 Auto-detect</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Jumlah Pembicara (Speaker)</label>
+            <div class="speaker-count-wrapper">
+              <button class="btn-speaker-count" id="speakerDecBtn">−</button>
+              <span class="speaker-count-display" id="speakerCountDisplay">2</span>
+              <button class="btn-speaker-count" id="speakerIncBtn">+</button>
+              <span class="speaker-count-label">Pembicara</span>
+            </div>
+          </div>
+
+          <div class="mic-test-section">
+            <label class="form-label">Test Mikrofon</label>
+            <div class="mic-test-bar">
+              <button class="btn-mic-test" id="micTestBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                Test Mic
+              </button>
+              <div class="mic-level-bar">
+                <div class="mic-level-fill" id="micLevelFill"></div>
+              </div>
+              <span class="mic-status" id="micStatus">Siap</span>
+            </div>
+          </div>
+
+          <button class="btn-start-meeting" id="startMeetingBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            Mulai Rekam Meeting
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: RECORDING LIVE -->
+    <section class="view" id="viewRecording">
+      <div class="recording-layout">
+
+        <!-- LEFT: LIVE TRANSCRIPT -->
+        <div class="transcript-panel glass-card">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+              Transkripsi Live
+            </h3>
+            <div class="panel-header-actions">
+              <button class="btn-sm" id="clearTranscriptBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                Hapus
+              </button>
+              <button class="btn-sm" id="addSpeakerBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                Ganti Speaker
+              </button>
+            </div>
+          </div>
+          <div class="transcript-body" id="transcriptBody">
+            <div class="transcript-placeholder">
+              <div class="placeholder-icon">🎙️</div>
+              <p>Transkripsi akan muncul di sini saat Anda mulai bicara...</p>
+            </div>
+          </div>
+          <div class="interim-display" id="interimDisplay"></div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+
+          <div class="speaker-panel glass-card">
+            <div class="panel-header">
+              <h3 class="panel-title">👥 Pembicara Aktif</h3>
+              <span class="current-speaker-badge" id="currentSpeakerBadge">Speaker 1</span>
+            </div>
+            <div class="speaker-list" id="speakerList"></div>
+          </div>
+
+          <div class="action-items-panel glass-card">
+            <div class="panel-header">
+              <h3 class="panel-title">✅ Action Items</h3>
+              <button class="btn-sm" id="addActionBtn">+ Tambah</button>
+            </div>
+            <div class="action-items-list" id="actionItemsList">
+              <div class="empty-state-sm">Belum ada action item</div>
+            </div>
+          </div>
+
+          <div class="notes-panel glass-card">
+            <div class="panel-header">
+              <h3 class="panel-title">📌 Catatan Tambahan</h3>
+            </div>
+            <textarea class="notes-textarea" id="notesTextarea" placeholder="Tambahkan catatan penting di sini..."></textarea>
+          </div>
+
+          <div class="recording-controls glass-card">
+            <div class="waveform-container">
+              <canvas id="waveformCanvas" class="waveform-canvas"></canvas>
+            </div>
+            <div class="controls-row">
+              <button class="ctrl-btn ctrl-pause" id="pauseBtn" title="Jeda Rekaman">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              </button>
+              <button class="ctrl-btn ctrl-stop" id="stopBtn" title="Selesai Meeting">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+              </button>
+              <button class="ctrl-btn ctrl-next-speaker" id="nextSpeakerBtn" title="Ganti Pembicara">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </button>
+              <button class="ctrl-btn ctrl-mark" id="markBtn" title="Tandai Poin Penting">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </button>
+            </div>
+            <div class="controls-labels">
+              <span>Jeda</span>
+              <span>Selesai</span>
+              <span>Speaker</span>
+              <span>Tandai</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: MOM RESULT -->
+    <section class="view" id="viewResult">
+      <div class="result-layout">
+        <div class="result-toolbar glass-card">
+          <div class="result-toolbar-left">
+            <button class="btn-secondary" id="backToMeetingBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Kembali
+            </button>
+            <h2 class="result-title">📄 Minutes of Meeting</h2>
+          </div>
+          <div class="result-toolbar-right">
+            <button class="btn-export pdf" id="exportPdfBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Export PDF
+            </button>
+            <button class="btn-export word" id="exportWordBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Export Word
+            </button>
+            <button class="btn-export share" id="copyMomBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+        <div class="mom-editor-container">
+          <div class="mom-document glass-card" id="momDocument"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- EXPORT MODAL -->
+  <div class="modal-overlay hidden" id="exportModal">
+    <div class="modal glass-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Export MOM</h3>
+        <button class="modal-close" id="closeExportModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="export-options">
+          <button class="export-option-card" id="modalExportPdf">
+            <div class="export-icon">📄</div>
+            <span class="export-label">PDF</span>
+            <span class="export-desc">Format siap cetak</span>
+          </button>
+          <button class="export-option-card" id="modalExportWord">
+            <div class="export-icon">📝</div>
+            <span class="export-label">Word (.doc)</span>
+            <span class="export-desc">Bisa diedit di MS Word</span>
+          </button>
+          <button class="export-option-card" id="modalExportText">
+            <div class="export-icon">📋</div>
+            <span class="export-label">Plain Text</span>
+            <span class="export-desc">Format teks biasa</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION ITEM MODAL -->
+  <div class="modal-overlay hidden" id="actionItemModal">
+    <div class="modal glass-card" style="max-width:480px">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Action Item</h3>
+        <button class="modal-close" id="closeActionModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Deskripsi Tugas</label>
+          <input type="text" id="actionDesc" class="form-input" placeholder="Jelaskan tugas yang harus dilakukan..." />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">PIC (Person in Charge)</label>
+            <input type="text" id="actionPic" class="form-input" placeholder="Nama PIC" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deadline</label>
+            <input type="date" id="actionDeadline" class="form-input" />
+          </div>
+        </div>
+        <button class="btn-start-meeting" id="saveActionItemBtn" style="margin-top:12px">
+          Simpan Action Item
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/store.js"></script>
+  <script src="js/transcription.js"></script>
+  <script src="js/waveform.js"></script>
+  <script src="js/mom-generator.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
