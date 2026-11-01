@@ -263,6 +263,38 @@
             <textarea class="notes-textarea" id="notesTextarea" placeholder="Tambahkan catatan penting di sini..."></textarea>
           </div>
 
+          <!-- MOBILE MIC PANEL -->
+          <div class="mobile-mic-panel glass-card" id="mobileMicPanel">
+            <div class="panel-header">
+              <h3 class="panel-title">📱 HP sebagai Mikrofon</h3>
+              <span class="mobile-status-badge offline" id="mobileBadge">Offline</span>
+            </div>
+            <div class="mobile-panel-body">
+              <div class="qr-section" id="qrSection">
+                <div class="qr-placeholder" id="qrPlaceholder">
+                  <div class="qr-spinner"></div>
+                  <span>Jalankan via node server.js</span>
+                </div>
+                <canvas id="qrCanvas" class="qr-canvas" style="display:none"></canvas>
+                <p class="qr-hint">Scan dengan HP, lalu tap 🎙 di HP</p>
+              </div>
+              <div class="mobile-url-row">
+                <span class="url-label">URL HP:</span>
+                <span class="url-text" id="mobileUrlText">—</span>
+                <button class="url-copy-btn" id="mobileUrlCopy" title="Copy URL">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </div>
+              <div class="mobile-conn-info hidden" id="mobileConnectedInfo">
+                <span class="mobile-conn-dot"></span>
+                <div>
+                  <span class="mobile-conn-title" id="mobileConnTitle">1 HP Terhubung</span>
+                  <span class="mobile-conn-sub">Suara HP langsung masuk ke transkripsi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="recording-controls glass-card">
             <div class="waveform-container">
               <canvas id="waveformCanvas" class="waveform-canvas"></canvas>
@@ -393,6 +425,7 @@
   <script src="js/waveform.js"></script>
   <script src="js/mom-generator.js"></script>
   <script src="js/export.js"></script>
+  <script src="js/mobile-bridge.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

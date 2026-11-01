@@ -49,6 +49,10 @@ let timerInterval = null;
 let isPaused = false;
 let micTestActive = false;
 
+// Mobile bridge state
+let mobileConnected = false;
+let isRunningViaServer = location.protocol === 'http:' && location.hostname !== 'localhost' || location.hostname !== '';
+
 // =====================================================================
 // INIT
 // =====================================================================
@@ -58,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initRecordingHandlers();
   initResultHandlers();
   initSidebarHandlers();
+  initMobileBridge();
   renderMeetingList();
   Waveform.drawIdle();
   Waveform.init($('waveformCanvas'));
