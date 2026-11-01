@@ -662,7 +662,11 @@ function initResultHandlers() {
 // =====================================================================
 function initSidebarHandlers() {
   $('sidebarToggle').addEventListener('click', () => {
-    $('sidebar').classList.toggle('collapsed');
+    const isCollapsed = $('sidebar').classList.toggle('collapsed');
+    $('sidebarToggle').title = isCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar';
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 200);
   });
 
   $('newMeetingBtn').addEventListener('click', () => {

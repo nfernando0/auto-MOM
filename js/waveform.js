@@ -100,24 +100,18 @@ const Waveform = (() => {
     const barW = (w / bufferLength) * 2.2;
     let x = 0;
 
-    // Gradient
-    const grad = ctx.createLinearGradient(0, 0, w, 0);
-    grad.addColorStop(0, '#00d4aa');
-    grad.addColorStop(0.5, '#7c3aed');
-    grad.addColorStop(1, '#00d4aa');
+    ctx.fillStyle = '#3b82f6';
+    ctx.globalAlpha = 1;
 
     for (let i = 0; i < bufferLength; i++) {
       const barH = (dataArray[i] / 255) * h * 0.9;
       const y = h / 2 - barH / 2;
 
-      ctx.fillStyle = grad;
-      ctx.globalAlpha = 0.85;
       roundRect(ctx, x, y, barW - 1, barH, 2);
       ctx.fill();
 
       x += barW + 0.5;
     }
-    ctx.globalAlpha = 1;
   }
 
   function drawIdle() {
@@ -125,16 +119,16 @@ const Waveform = (() => {
     const { w, h } = getCanvasSize();
     ctx.clearRect(0, 0, w, h);
     // Draw flat line
-    ctx.strokeStyle = 'rgba(0,212,170,0.2)';
+    ctx.strokeStyle = '#2d374d';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, h / 2);
     ctx.lineTo(w, h / 2);
     ctx.stroke();
     // Small center dot
-    ctx.fillStyle = 'rgba(0,212,170,0.4)';
+    ctx.fillStyle = '#3b82f6';
     ctx.beginPath();
-    ctx.arc(w / 2, h / 2, 3, 0, Math.PI * 2);
+    ctx.arc(w / 2, h / 2, 2.5, 0, Math.PI * 2);
     ctx.fill();
   }
 

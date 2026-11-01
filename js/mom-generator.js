@@ -30,7 +30,7 @@ const MOMGenerator = (() => {
   }
 
   function speakerColor(idx) {
-    const colors = ['#00d4aa','#7c3aed','#f59e0b','#f43f5e','#3b82f6','#ec4899','#14b8a6','#a855f7'];
+    const colors = ['#38bdf8', '#a855f7', '#f59e0b', '#f43f5e', '#10b981', '#ec4899', '#06b6d4', '#f97316'];
     return colors[idx % colors.length];
   }
 
@@ -164,7 +164,7 @@ ${buildSignatureSection(meeting)}
 
     return `
 <div class="mom-header">
-  <div class="mom-org-name" style="color:#7c3aed">⚡ Agile / Scrum Meeting Notes</div>
+  <div class="mom-org-name" style="color:#8b5cf6">⚡ Agile / Scrum Meeting Notes</div>
   <div class="mom-doc-title">${escHtml(meeting.title)}</div>
   <div class="mom-doc-subtitle">${formatDate(meeting.date)} • ${formatDuration(meeting.duration)}</div>
 </div>

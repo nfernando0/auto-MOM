@@ -23,8 +23,8 @@ const Transcription = (() => {
 
   // ── Speaker Colors ────────────────────────────────────────────────────────
   const SPEAKER_COLORS = [
-    '#00d4aa', '#7c3aed', '#f59e0b', '#f43f5e',
-    '#3b82f6', '#ec4899', '#14b8a6', '#a855f7',
+    '#38bdf8', '#a855f7', '#f59e0b', '#f43f5e',
+    '#10b981', '#ec4899', '#06b6d4', '#f97316',
   ];
 
   function getSpeakerColor(idx) {

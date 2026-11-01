@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -13,24 +14,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:     #070c18;
-      --surface:#0d1426;
-      --cyan:   #00d4aa;
-      --purple: #7c3aed;
-      --rose:   #f43f5e;
-      --amber:  #f59e0b;
-      --green:  #22c55e;
-      --text:   #e8edf5;
-      --muted:  #8b97b0;
-      --dim:    #4a5568;
-      --border: rgba(255,255,255,0.08);
-      --r:      16px;
+      --bg: #0c0f17;
+      --surface: #121722;
+      --card: #151b27;
+      --elevated: #171d2b;
+      --border: #232c3d;
+      --border-light: #2d374d;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-text: #3b82f6;
+      --rose: #ef4444;
+      --rose-bg: #dc2626;
+      --amber: #f59e0b;
+      --green: #10b981;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --dim: #6b7280;
+      --r: 8px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100svh;
@@ -39,767 +50,1011 @@
       align-items: center;
       padding: 0;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── HEADER ── */
     .header {
       width: 100%;
-      padding: 20px 20px 16px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 10;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
+
     .header-logo {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r);
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
     }
-    .header-text h1 { font-size: 1rem; font-weight: 700; }
-    .header-text p  { font-size: 0.75rem; color: var(--muted); }
+
+    .header-text h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .header-text p {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
 
     /* ── STATUS CHIP ── */
     .status-bar {
-      width: 100%; padding: 12px 20px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      font-size: 0.78rem; font-weight: 600;
+      width: 100%;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
     }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); flex-shrink: 0; }
-    .status-dot.connecting { background: var(--amber); animation: blink 1s ease-in-out infinite; }
-    .status-dot.connected  { background: var(--green); }
-    .status-dot.error      { background: var(--rose); }
-    .status-dot.recording  { background: var(--rose); animation: recPulse 1.2s ease-in-out infinite; }
-    @keyframes blink    { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
-    @keyframes recPulse { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:0.4; transform:scale(0.7) } }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--dim);
+      flex-shrink: 0;
+    }
+
+    .status-dot.connecting {
+      background: var(--amber);
+    }
+
+    .status-dot.connected {
+      background: var(--green);
+    }
+
+    .status-dot.error {
+      background: var(--rose);
+    }
+
+    .status-dot.recording {
+      background: var(--rose);
+    }
 
     /* ── MAIN CONTENT ── */
     .content {
-      width: 100%; max-width: 440px;
-      padding: 20px 20px 40px;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 16px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
       flex: 1;
     }
 
-    /* ── MIC BUTTON ── */
+    /* ── MIC BUTTON (Clean Solid) ── */
     .mic-wrapper {
-      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
       margin: 8px 0;
     }
+
     .mic-rings {
-      position: relative; display: flex; align-items: center; justify-content: center;
-      width: 200px; height: 200px;
-    }
-    .ring {
-      position: absolute; border-radius: 50%;
-      border: 2px solid var(--cyan); opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .ring-1 { width: 180px; height: 180px; }
-    .ring-2 { width: 210px; height: 210px; }
-    .ring-3 { width: 240px; height: 240px; }
-    .ring.active { opacity: 0.3; animation: ringPulse 2s ease-out infinite; }
-    .ring-2.active { animation-delay: 0.4s; }
-    .ring-3.active { animation-delay: 0.8s; }
-    @keyframes ringPulse {
-      0%   { transform: scale(0.85); opacity: 0.4; }
-      100% { transform: scale(1.15); opacity: 0; }
+      display: none;
     }
 
     .mic-btn {
-      position: relative; z-index: 1;
-      width: 140px; height: 140px; border-radius: 50%;
-      border: none; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-      background: linear-gradient(145deg, var(--surface), #1a2540);
-      box-shadow: 0 0 0 4px var(--border), 0 8px 32px rgba(0,0,0,0.5);
-      transition: transform 0.15s, box-shadow 0.15s;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--elevated);
+      color: var(--text);
+      transition: background-color 0.15s, border-color 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
-    .mic-btn:active { transform: scale(0.93); }
-    .mic-btn.recording {
-      background: linear-gradient(145deg, rgba(244,63,94,0.2), rgba(244,63,94,0.1));
-      box-shadow: 0 0 0 4px rgba(244,63,94,0.3), 0 8px 40px rgba(244,63,94,0.25);
+
+    .mic-btn:active {
+      transform: scale(0.96);
     }
-    .mic-btn-icon { font-size: 2.8rem; }
-    .mic-btn-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
-    .mic-btn.recording .mic-btn-label { color: var(--rose); }
+
+    .mic-btn.recording {
+      background: var(--rose-bg);
+      border-color: var(--rose);
+      color: #ffffff;
+    }
+
+    .mic-btn-icon {
+      font-size: 2.4rem;
+    }
+
+    .mic-btn-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .mic-btn.recording .mic-btn-label {
+      color: #ffffff;
+    }
 
     /* ── WAVEFORM ── */
     .waveform-mini {
-      width: 100%; height: 48px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: var(--r); overflow: hidden;
-    }
-    #mobileWaveCanvas { width: 100%; height: 100%; display: block; }
-
-    /* ── CARDS ── */
-    .card {
       width: 100%;
-      background: var(--surface);
+      height: 44px;
+      background: var(--elevated);
       border: 1px solid var(--border);
       border-radius: var(--r);
       overflow: hidden;
     }
-    .card-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
+
+    #mobileWaveCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
-    .card-title { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-    .card-body { padding: 14px 16px; }
+
+    /* ── CARDS ── */
+    .card {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .card-body {
+      padding: 12px 14px;
+    }
 
     /* Speaker Selector */
     .speaker-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
     }
+
     .speaker-pill {
-      padding: 10px; border-radius: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
       border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      display: flex; align-items: center; gap: 8px;
-      cursor: pointer; transition: all 0.15s;
+      background: var(--elevated);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    .speaker-pill:active { transform: scale(0.96); }
-    .speaker-pill.active { border-color: var(--cyan); background: rgba(0,212,170,0.1); }
-    .speaker-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .speaker-pill-name { font-size: 0.8rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .speaker-pill:active {
+      transform: scale(0.97);
+    }
+
+    .speaker-pill.active {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.15);
+    }
+
+    .speaker-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .speaker-pill-name {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     /* Language selector */
-    .lang-row { display: flex; gap: 8px; }
-    .lang-chip {
-      flex: 1; padding: 9px; border-radius: 10px; border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03); font-size: 0.8rem; font-weight: 600;
-      cursor: pointer; text-align: center; transition: all 0.15s;
-      -webkit-tap-highlight-color: transparent; color: var(--text);
+    .lang-row {
+      display: flex;
+      gap: 6px;
     }
-    .lang-chip:active { transform: scale(0.96); }
-    .lang-chip.active { border-color: var(--cyan); background: rgba(0,212,170,0.1); color: var(--cyan); }
+
+    .lang-chip {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--elevated);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+      color: var(--text);
+    }
+
+    .lang-chip:active {
+      transform: scale(0.97);
+    }
+
+    .lang-chip.active {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--primary-text);
+    }
 
     /* Transcript preview */
     .transcript-preview {
-      max-height: 180px; overflow-y: auto;
-      display: flex; flex-direction: column; gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
+
     .tp-entry {
-      padding: 8px 10px; border-radius: 8px;
-      background: rgba(255,255,255,0.04);
-      border-left: 3px solid var(--cyan);
-      font-size: 0.82rem; color: var(--text); line-height: 1.5;
-      animation: fadeUp 0.25s ease;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--elevated);
+      border-left: 3px solid var(--primary);
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.5;
     }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:none } }
-    .tp-meta { font-size: 0.7rem; color: var(--muted); margin-bottom: 3px; }
+
+    .tp-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
 
     .interim-text {
-      padding: 10px; border-radius: 10px;
-      background: rgba(0,212,170,0.06); border: 1px dashed rgba(0,212,170,0.3);
-      font-size: 0.82rem; color: var(--muted); font-style: italic;
-      min-height: 36px; transition: opacity 0.2s;
+      padding: 9px 12px;
+      border-radius: 6px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--primary-text);
+      min-height: 36px;
     }
-    .interim-text:empty { opacity: 0.3; }
-    .interim-text:empty::after { content: 'Mendengarkan...'; }
+
+    .interim-text:empty {
+      opacity: 0.4;
+    }
+
+    .interim-text:empty::after {
+      content: 'Mendengarkan...';
+    }
 
     /* Controls */
     .controls-row {
-      display: flex; gap: 10px;
+      display: flex;
+      gap: 8px;
     }
+
     .ctrl-btn-mini {
-      flex: 1; padding: 12px; border-radius: 12px;
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
       border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      font-size: 0.8rem; font-weight: 600; color: var(--text);
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      cursor: pointer; transition: all 0.15s;
+      background: var(--elevated);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    .ctrl-btn-mini:active { transform: scale(0.95); }
-    .ctrl-btn-mini.speaker { border-color: rgba(124,58,237,0.4); color: #a78bfa; }
-    .ctrl-btn-mini.mark { border-color: rgba(245,158,11,0.4); color: var(--amber); }
+
+    .ctrl-btn-mini:active {
+      transform: scale(0.96);
+    }
+
+    .ctrl-btn-mini.speaker {
+      color: var(--primary-text);
+    }
+
+    .ctrl-btn-mini.mark {
+      color: var(--amber);
+    }
 
     /* Connection modal */
     .connect-overlay {
-      position: fixed; inset: 0; z-index: 100;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
       background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 32px; gap: 24px; text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      gap: 20px;
+      text-align: center;
     }
-    .connect-overlay.hidden { display: none; }
-    .connect-icon { font-size: 3rem; animation: floatIcon 3s ease-in-out infinite; }
-    @keyframes floatIcon { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-8px) } }
-    .connect-title { font-size: 1.3rem; font-weight: 800; }
-    .connect-subtitle { font-size: 0.88rem; color: var(--muted); line-height: 1.6; max-width: 280px; }
+
+    .connect-overlay.hidden {
+      display: none;
+    }
+
+    .connect-icon {
+      font-size: 2.6rem;
+    }
+
+    .connect-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .connect-subtitle {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 280px;
+    }
+
     .connect-spinner {
-      width: 40px; height: 40px; border-radius: 50%;
-      border: 3px solid var(--border);
-      border-top-color: var(--cyan);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
       animation: spin 0.8s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg) } }
-    .retry-btn {
-      padding: 12px 28px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      color: white; font-weight: 700; font-size: 0.88rem;
-      border: none; cursor: pointer; display: none;
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
     }
-    .retry-btn.show { display: block; }
+
+    .retry-btn {
+      padding: 10px 24px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border: none;
+      cursor: pointer;
+      display: none;
+    }
+
+    .retry-btn.show {
+      display: block;
+    }
+
+    .retry-btn:hover {
+      background: var(--primary-hover);
+    }
+
+
+    .retry-btn.show {
+      display: block;
+    }
 
     /* Error banner */
     .error-banner {
-      width: 100%; padding: 12px 16px; border-radius: 12px;
-      background: rgba(244,63,94,0.12); border: 1px solid rgba(244,63,94,0.3);
-      color: var(--rose); font-size: 0.82rem; font-weight: 500;
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: var(--rose);
+      font-size: 0.82rem;
+      font-weight: 500;
       display: none;
     }
-    .error-banner.show { display: block; }
+
+    .error-banner.show {
+      display: block;
+    }
 
     /* Permission request */
     .perm-card {
-      width: 100%; padding: 20px;
-      background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.3);
-      border-radius: var(--r); text-align: center;
-      display: flex; flex-direction: column; gap: 12px; align-items: center;
-    }
-    .perm-btn {
-      padding: 12px 24px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      color: white; font-weight: 700; font-size: 0.9rem;
-      border: none; cursor: pointer; width: 100%;
+      width: 100%;
+      padding: 18px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
     }
 
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .perm-btn {
+      padding: 10px 20px;
+      border-radius: var(--r);
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.15s;
+    }
+
+    .perm-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
   </style>
 </head>
+
 <body>
 
-<!-- CONNECTION OVERLAY -->
-<div class="connect-overlay" id="connectOverlay">
-  <div class="connect-icon">📡</div>
-  <div class="connect-title">Menghubungkan ke Laptop...</div>
-  <div class="connect-subtitle">Pastikan HP dan laptop terhubung ke WiFi yang sama.</div>
-  <div class="connect-spinner" id="connectSpinner"></div>
-  <button class="retry-btn" id="retryBtn" onclick="connectWS()">Coba Lagi</button>
-</div>
-
-<!-- HEADER -->
-<header class="header">
-  <div class="header-logo">🎙</div>
-  <div class="header-text">
-    <h1>Auto MOM — Mobile Mic</h1>
-    <p>HP sebagai mikrofon wireless</p>
+  <!-- CONNECTION OVERLAY -->
+  <div class="connect-overlay" id="connectOverlay">
+    <div class="connect-icon">📡</div>
+    <div class="connect-title">Menghubungkan ke Laptop...</div>
+    <div class="connect-subtitle">Pastikan HP dan laptop terhubung ke WiFi yang sama.</div>
+    <div class="connect-spinner" id="connectSpinner"></div>
+    <button class="retry-btn" id="retryBtn" onclick="connectWS()">Coba Lagi</button>
   </div>
-</header>
 
-<!-- STATUS BAR -->
-<div class="status-bar" id="statusBar">
-  <div class="status-dot connecting" id="statusDot"></div>
-  <span id="statusText">Menghubungkan...</span>
-</div>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-logo">🎙</div>
+    <div class="header-text">
+      <h1>Auto MOM — Mobile Mic</h1>
+      <p>HP sebagai mikrofon wireless</p>
+    </div>
+  </header>
 
-<!-- MAIN CONTENT -->
-<div class="content">
+  <!-- STATUS BAR -->
+  <div class="status-bar" id="statusBar">
+    <div class="status-dot connecting" id="statusDot"></div>
+    <span id="statusText">Menghubungkan...</span>
+  </div>
 
-  <!-- Error banner -->
-  <div class="error-banner" id="errorBanner"></div>
+  <!-- MAIN CONTENT -->
+  <div class="content">
 
-  <!-- MIC BUTTON -->
-  <div class="mic-wrapper">
-    <div class="mic-rings">
-      <div class="ring ring-1" id="ring1"></div>
-      <div class="ring ring-2" id="ring2"></div>
-      <div class="ring ring-3" id="ring3"></div>
-      <button class="mic-btn" id="micBtn" onclick="toggleRecording()" disabled>
-        <span class="mic-btn-icon" id="micIcon">🎙</span>
-        <span class="mic-btn-label" id="micLabel">Tap Mulai</span>
+    <!-- Error banner -->
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- MIC BUTTON -->
+    <div class="mic-wrapper">
+      <div class="mic-rings">
+        <div class="ring ring-1" id="ring1"></div>
+        <div class="ring ring-2" id="ring2"></div>
+        <div class="ring ring-3" id="ring3"></div>
+        <button class="mic-btn" id="micBtn" onclick="toggleRecording()" disabled>
+          <span class="mic-btn-icon" id="micIcon">🎙</span>
+          <span class="mic-btn-label" id="micLabel">Tap Mulai</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- WAVEFORM -->
+    <div class="waveform-mini">
+      <canvas id="mobileWaveCanvas"></canvas>
+    </div>
+
+    <!-- SPEAKER SELECTOR -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">👥 Saya adalah...</span>
+      </div>
+      <div class="card-body">
+        <div class="speaker-grid" id="speakerGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- LANGUAGE -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🌐 Bahasa</span>
+      </div>
+      <div class="card-body">
+        <div class="lang-row">
+          <button class="lang-chip active" data-lang="id-ID" onclick="setLang(this)">🇮🇩 Indonesia</button>
+          <button class="lang-chip" data-lang="en-US" onclick="setLang(this)">🇺🇸 English</button>
+          <button class="lang-chip" data-lang="auto" onclick="setLang(this)">🌐 Auto</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls-row">
+      <button class="ctrl-btn-mini speaker" onclick="nextSpeaker()">
+        <span>👥</span> Ganti Speaker
+      </button>
+      <button class="ctrl-btn-mini mark" onclick="markImportant()">
+        <span>⭐</span> Tandai Penting
       </button>
     </div>
-  </div>
 
-  <!-- WAVEFORM -->
-  <div class="waveform-mini">
-    <canvas id="mobileWaveCanvas"></canvas>
-  </div>
-
-  <!-- SPEAKER SELECTOR -->
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">👥 Saya adalah...</span>
-    </div>
-    <div class="card-body">
-      <div class="speaker-grid" id="speakerGrid">
-        <!-- Populated by JS -->
+    <!-- INTERIM TEXT -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">⌛ Sedang Didengarkan</span>
+      </div>
+      <div class="card-body">
+        <div class="interim-text" id="interimText"></div>
       </div>
     </div>
-  </div>
 
-  <!-- LANGUAGE -->
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">🌐 Bahasa</span>
-    </div>
-    <div class="card-body">
-      <div class="lang-row">
-        <button class="lang-chip active" data-lang="id-ID" onclick="setLang(this)">🇮🇩 Indonesia</button>
-        <button class="lang-chip" data-lang="en-US" onclick="setLang(this)">🇺🇸 English</button>
-        <button class="lang-chip" data-lang="auto" onclick="setLang(this)">🌐 Auto</button>
+    <!-- TRANSCRIPT PREVIEW -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📝 Transkripsi Terkirim</span>
+        <span id="entryCount" style="font-size:0.75rem;color:var(--muted)">0 entri</span>
+      </div>
+      <div class="card-body" style="padding:12px">
+        <div class="transcript-preview" id="transcriptPreview">
+          <div style="font-size:0.8rem;color:var(--dim);text-align:center;padding:8px">Mulai bicara setelah menekan
+            tombol mic...</div>
+        </div>
       </div>
     </div>
+
   </div>
 
-  <!-- CONTROLS -->
-  <div class="controls-row">
-    <button class="ctrl-btn-mini speaker" onclick="nextSpeaker()">
-      <span>👥</span> Ganti Speaker
-    </button>
-    <button class="ctrl-btn-mini mark" onclick="markImportant()">
-      <span>⭐</span> Tandai Penting
-    </button>
-  </div>
+  <script>
+    // ── CONSTANTS ─────────────────────────────────────────────────────────────────
+    const WS_PROTO = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const WS_URL = `${WS_PROTO}//${location.host}?role=mobile`;
+    const SPEAKER_COLORS = ['#38bdf8', '#a855f7', '#f59e0b', '#f43f5e', '#10b981', '#ec4899', '#06b6d4', '#f97316'];
 
-  <!-- INTERIM TEXT -->
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">⌛ Sedang Didengarkan</span>
-    </div>
-    <div class="card-body">
-      <div class="interim-text" id="interimText"></div>
-    </div>
-  </div>
+    // ── STATE ─────────────────────────────────────────────────────────────────────
+    let ws = null;
+    let recognition = null;
+    let isRecording = false;
+    let isPaused = false;
+    let currentSpeakerIdx = 0;
+    let speakerCount = 2;
+    let speakerNames = [];
+    let currentLang = 'id-ID';
+    let entryCount = 0;
+    let audioCtx = null;
+    let analyser = null;
+    let micStream = null;
+    let waveAnimFrame = null;
+    let wsConnected = false;
+    let reconnectTimer = null;
+    let reconnectAttempts = 0;
+    const MAX_RECONNECT = 10;
 
-  <!-- TRANSCRIPT PREVIEW -->
-  <div class="card">
-    <div class="card-header">
-      <span class="card-title">📝 Transkripsi Terkirim</span>
-      <span id="entryCount" style="font-size:0.75rem;color:var(--muted)">0 entri</span>
-    </div>
-    <div class="card-body" style="padding:12px">
-      <div class="transcript-preview" id="transcriptPreview">
-        <div style="font-size:0.8rem;color:var(--dim);text-align:center;padding:8px">Mulai bicara setelah menekan tombol mic...</div>
-      </div>
-    </div>
-  </div>
+    // ── WebSocket Connection ──────────────────────────────────────────────────────
+    function connectWS() {
+      clearTimeout(reconnectTimer);
+      setStatus('connecting', 'Menghubungkan...');
+      document.getElementById('connectSpinner').style.display = 'block';
+      document.getElementById('retryBtn').classList.remove('show');
 
-</div>
+      ws = new WebSocket(WS_URL);
 
-<script>
-// ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const WS_PROTO = location.protocol === 'https:' ? 'wss:' : 'ws:';
-const WS_URL = `${WS_PROTO}//${location.host}?role=mobile`;
-const SPEAKER_COLORS = ['#00d4aa','#7c3aed','#f59e0b','#f43f5e','#3b82f6','#ec4899'];
+      ws.onopen = () => {
+        wsConnected = true;
+        reconnectAttempts = 0;
+        setStatus('connected', 'Terhubung ke Laptop ✓');
+        document.getElementById('connectOverlay').classList.add('hidden');
+        document.getElementById('micBtn').disabled = false;
+        sendToDesktop({ type: 'mobile_ready', lang: currentLang, speakerIdx: currentSpeakerIdx });
+      };
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let ws = null;
-let recognition = null;
-let isRecording = false;
-let isPaused = false;
-let currentSpeakerIdx = 0;
-let speakerCount = 2;
-let speakerNames = [];
-let currentLang = 'id-ID';
-let entryCount = 0;
-let audioCtx = null;
-let analyser = null;
-let micStream = null;
-let waveAnimFrame = null;
-let wsConnected = false;
-let reconnectTimer = null;
-let reconnectAttempts = 0;
-const MAX_RECONNECT = 10;
+      ws.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          handleDesktopMessage(msg);
+        } catch (e) { }
+      };
 
-// ── WebSocket Connection ──────────────────────────────────────────────────────
-function connectWS() {
-  clearTimeout(reconnectTimer);
-  setStatus('connecting', 'Menghubungkan...');
-  document.getElementById('connectSpinner').style.display = 'block';
-  document.getElementById('retryBtn').classList.remove('show');
+      ws.onclose = () => {
+        wsConnected = false;
+        setStatus('error', 'Koneksi terputus');
+        document.getElementById('micBtn').disabled = true;
+        stopRecording();
+        scheduleReconnect();
+      };
 
-  ws = new WebSocket(WS_URL);
-
-  ws.onopen = () => {
-    wsConnected = true;
-    reconnectAttempts = 0;
-    setStatus('connected', 'Terhubung ke Laptop ✓');
-    document.getElementById('connectOverlay').classList.add('hidden');
-    document.getElementById('micBtn').disabled = false;
-    sendToDesktop({ type: 'mobile_ready', lang: currentLang, speakerIdx: currentSpeakerIdx });
-  };
-
-  ws.onmessage = (ev) => {
-    try {
-      const msg = JSON.parse(ev.data);
-      handleDesktopMessage(msg);
-    } catch(e) {}
-  };
-
-  ws.onclose = () => {
-    wsConnected = false;
-    setStatus('error', 'Koneksi terputus');
-    document.getElementById('micBtn').disabled = true;
-    stopRecording();
-    scheduleReconnect();
-  };
-
-  ws.onerror = () => {
-    wsConnected = false;
-    setStatus('error', 'Gagal terhubung');
-  };
-}
-
-function scheduleReconnect() {
-  reconnectAttempts++;
-  if (reconnectAttempts > MAX_RECONNECT) {
-    setStatus('error', 'Gagal terhubung. Tap Coba Lagi.');
-    document.getElementById('connectOverlay').classList.remove('hidden');
-    document.getElementById('connectSpinner').style.display = 'none';
-    document.getElementById('retryBtn').classList.add('show');
-    return;
-  }
-  const delay = Math.min(1000 * reconnectAttempts, 5000);
-  setStatus('connecting', `Reconnect dalam ${Math.round(delay/1000)}d... (${reconnectAttempts}/${MAX_RECONNECT})`);
-  reconnectTimer = setTimeout(connectWS, delay);
-}
-
-function sendToDesktop(msg) {
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(msg));
-  }
-}
-
-function handleDesktopMessage(msg) {
-  switch (msg.type) {
-    case 'set_speakers':
-      speakerCount = msg.count || 2;
-      speakerNames = msg.names || [];
-      renderSpeakerGrid();
-      break;
-    case 'set_speaker':
-      currentSpeakerIdx = msg.idx || 0;
-      updateActiveSpeaker();
-      break;
-    case 'stop_recording':
-      stopRecording();
-      break;
-    case 'desktop_ready':
-      // Desktop connected, send our state
-      sendToDesktop({ type: 'mobile_ready', lang: currentLang, speakerIdx: currentSpeakerIdx });
-      break;
-  }
-}
-
-// ── Speech Recognition ────────────────────────────────────────────────────────
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-function buildRecognition(lang) {
-  if (!SpeechRecognition) return null;
-  const r = new SpeechRecognition();
-  r.continuous = true;
-  r.interimResults = true;
-  r.maxAlternatives = 1;
-  r.lang = lang === 'auto' ? 'id-ID' : lang;
-  return r;
-}
-
-function startRecognition() {
-  if (!SpeechRecognition) {
-    showError('Browser ini tidak mendukung Speech Recognition. Gunakan Chrome.');
-    return;
-  }
-  if (recognition) { try { recognition.stop(); } catch(_) {} }
-  recognition = buildRecognition(currentLang);
-
-  recognition.onresult = (event) => {
-    let interim = '';
-    let final = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const res = event.results[i];
-      if (res.isFinal) final += res[0].transcript;
-      else interim += res[0].transcript;
+      ws.onerror = () => {
+        wsConnected = false;
+        setStatus('error', 'Gagal terhubung');
+      };
     }
-    if (interim) document.getElementById('interimText').textContent = interim;
-    if (final.trim()) {
+
+    function scheduleReconnect() {
+      reconnectAttempts++;
+      if (reconnectAttempts > MAX_RECONNECT) {
+        setStatus('error', 'Gagal terhubung. Tap Coba Lagi.');
+        document.getElementById('connectOverlay').classList.remove('hidden');
+        document.getElementById('connectSpinner').style.display = 'none';
+        document.getElementById('retryBtn').classList.add('show');
+        return;
+      }
+      const delay = Math.min(1000 * reconnectAttempts, 5000);
+      setStatus('connecting', `Reconnect dalam ${Math.round(delay / 1000)}d... (${reconnectAttempts}/${MAX_RECONNECT})`);
+      reconnectTimer = setTimeout(connectWS, delay);
+    }
+
+    function sendToDesktop(msg) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(msg));
+      }
+    }
+
+    function handleDesktopMessage(msg) {
+      switch (msg.type) {
+        case 'set_speakers':
+          speakerCount = msg.count || 2;
+          speakerNames = msg.names || [];
+          renderSpeakerGrid();
+          break;
+        case 'set_speaker':
+          currentSpeakerIdx = msg.idx || 0;
+          updateActiveSpeaker();
+          break;
+        case 'stop_recording':
+          stopRecording();
+          break;
+        case 'desktop_ready':
+          // Desktop connected, send our state
+          sendToDesktop({ type: 'mobile_ready', lang: currentLang, speakerIdx: currentSpeakerIdx });
+          break;
+      }
+    }
+
+    // ── Speech Recognition ────────────────────────────────────────────────────────
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    function buildRecognition(lang) {
+      if (!SpeechRecognition) return null;
+      const r = new SpeechRecognition();
+      r.continuous = true;
+      r.interimResults = true;
+      r.maxAlternatives = 1;
+      r.lang = lang === 'auto' ? 'id-ID' : lang;
+      return r;
+    }
+
+    function startRecognition() {
+      if (!SpeechRecognition) {
+        showError('Browser ini tidak mendukung Speech Recognition. Gunakan Chrome.');
+        return;
+      }
+      if (recognition) { try { recognition.stop(); } catch (_) { } }
+      recognition = buildRecognition(currentLang);
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        let final = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const res = event.results[i];
+          if (res.isFinal) final += res[0].transcript;
+          else interim += res[0].transcript;
+        }
+        if (interim) document.getElementById('interimText').textContent = interim;
+        if (final.trim()) {
+          document.getElementById('interimText').textContent = '';
+          const text = final.trim();
+          sendTranscript(text);
+          addPreviewEntry(text);
+        }
+      };
+
+      recognition.onerror = (e) => {
+        if (e.error === 'no-speech') { if (isRecording) restartRecognition(); return; }
+        if (e.error === 'aborted') return;
+        showError('Mic error: ' + e.error);
+      };
+
+      recognition.onend = () => {
+        if (isRecording && !isPaused) restartRecognition();
+      };
+
+      try { recognition.start(); } catch (e) { }
+    }
+
+    function restartRecognition(delay = 200) {
+      setTimeout(() => {
+        if (isRecording && !isPaused) startRecognition();
+      }, delay);
+    }
+
+    function sendTranscript(text) {
+      sendToDesktop({
+        type: 'transcript',
+        text,
+        speakerIdx: currentSpeakerIdx,
+        speakerName: speakerNames[currentSpeakerIdx] || `Speaker ${currentSpeakerIdx + 1}`,
+        lang: currentLang,
+        timestamp: Date.now(),
+      });
+    }
+
+    // ── Toggle Recording ──────────────────────────────────────────────────────────
+    async function toggleRecording() {
+      if (!SpeechRecognition) {
+        showError('Browser tidak mendukung Speech Recognition. Gunakan Chrome di HP.');
+        return;
+      }
+      if (!isRecording) await startRecording();
+      else stopRecording();
+    }
+
+    async function startRecording() {
+      // Request mic permission for waveform if supported
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          startWaveform(micStream);
+        }
+      } catch (e) {
+        console.warn('Waveform audio stream unavailable:', e);
+      }
+
+      isRecording = true;
+      isPaused = false;
+      updateMicUI(true);
+      startRecognition();
+      sendToDesktop({ type: 'recording_started', speakerIdx: currentSpeakerIdx });
+    }
+
+    function stopRecording() {
+      isRecording = false;
+      isPaused = false;
+      if (recognition) { try { recognition.stop(); } catch (_) { } recognition = null; }
+      stopWaveform();
+      if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
       document.getElementById('interimText').textContent = '';
-      const text = final.trim();
-      sendTranscript(text);
-      addPreviewEntry(text);
+      updateMicUI(false);
     }
-  };
 
-  recognition.onerror = (e) => {
-    if (e.error === 'no-speech') { if (isRecording) restartRecognition(); return; }
-    if (e.error === 'aborted') return;
-    showError('Mic error: ' + e.error);
-  };
+    function updateMicUI(recording) {
+      const btn = document.getElementById('micBtn');
+      const icon = document.getElementById('micIcon');
+      const label = document.getElementById('micLabel');
+      const rings = document.querySelectorAll('.ring');
+      const dot = document.getElementById('statusDot');
 
-  recognition.onend = () => {
-    if (isRecording && !isPaused) restartRecognition();
-  };
-
-  try { recognition.start(); } catch(e) {}
-}
-
-function restartRecognition(delay = 200) {
-  setTimeout(() => {
-    if (isRecording && !isPaused) startRecognition();
-  }, delay);
-}
-
-function sendTranscript(text) {
-  sendToDesktop({
-    type: 'transcript',
-    text,
-    speakerIdx: currentSpeakerIdx,
-    speakerName: speakerNames[currentSpeakerIdx] || `Speaker ${currentSpeakerIdx + 1}`,
-    lang: currentLang,
-    timestamp: Date.now(),
-  });
-}
-
-// ── Toggle Recording ──────────────────────────────────────────────────────────
-async function toggleRecording() {
-  if (!SpeechRecognition) {
-    showError('Browser tidak mendukung Speech Recognition. Gunakan Chrome di HP.');
-    return;
-  }
-  if (!isRecording) await startRecording();
-  else stopRecording();
-}
-
-async function startRecording() {
-  // Request mic permission for waveform if supported
-  try {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      startWaveform(micStream);
+      if (recording) {
+        btn.classList.add('recording');
+        icon.textContent = '⏹';
+        label.textContent = 'Tap Stop';
+        rings.forEach(r => r.classList.add('active'));
+        dot.className = 'status-dot recording';
+        document.getElementById('statusText').textContent = 'Sedang Merekam...';
+      } else {
+        btn.classList.remove('recording');
+        icon.textContent = '🎙';
+        label.textContent = 'Tap Mulai';
+        rings.forEach(r => r.classList.remove('active'));
+        if (wsConnected) {
+          dot.className = 'status-dot connected';
+          document.getElementById('statusText').textContent = 'Terhubung ke Laptop ✓';
+        }
+      }
     }
-  } catch (e) {
-    console.warn('Waveform audio stream unavailable:', e);
-  }
 
-  isRecording = true;
-  isPaused = false;
-  updateMicUI(true);
-  startRecognition();
-  sendToDesktop({ type: 'recording_started', speakerIdx: currentSpeakerIdx });
-}
+    // ── Transcript Preview ────────────────────────────────────────────────────────
+    function addPreviewEntry(text) {
+      entryCount++;
+      document.getElementById('entryCount').textContent = `${entryCount} entri`;
 
-function stopRecording() {
-  isRecording = false;
-  isPaused = false;
-  if (recognition) { try { recognition.stop(); } catch(_) {} recognition = null; }
-  stopWaveform();
-  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
-  document.getElementById('interimText').textContent = '';
-  updateMicUI(false);
-}
+      const preview = document.getElementById('transcriptPreview');
+      // Remove placeholder
+      const ph = preview.querySelector('div[style]');
+      if (ph) ph.remove();
 
-function updateMicUI(recording) {
-  const btn = document.getElementById('micBtn');
-  const icon = document.getElementById('micIcon');
-  const label = document.getElementById('micLabel');
-  const rings = document.querySelectorAll('.ring');
-  const dot = document.getElementById('statusDot');
+      const color = SPEAKER_COLORS[currentSpeakerIdx % SPEAKER_COLORS.length];
+      const name = speakerNames[currentSpeakerIdx] || `Speaker ${currentSpeakerIdx + 1}`;
 
-  if (recording) {
-    btn.classList.add('recording');
-    icon.textContent = '⏹';
-    label.textContent = 'Tap Stop';
-    rings.forEach(r => r.classList.add('active'));
-    dot.className = 'status-dot recording';
-    document.getElementById('statusText').textContent = 'Sedang Merekam...';
-  } else {
-    btn.classList.remove('recording');
-    icon.textContent = '🎙';
-    label.textContent = 'Tap Mulai';
-    rings.forEach(r => r.classList.remove('active'));
-    if (wsConnected) {
-      dot.className = 'status-dot connected';
-      document.getElementById('statusText').textContent = 'Terhubung ke Laptop ✓';
+      const el = document.createElement('div');
+      el.className = 'tp-entry';
+      el.style.borderLeftColor = color;
+      el.innerHTML = `<div class="tp-meta" style="color:${color}">${escHtml(name)}</div>${escHtml(text)}`;
+      preview.appendChild(el);
+      preview.scrollTop = preview.scrollHeight;
+
+      // Keep max 20 entries in preview
+      while (preview.children.length > 20) preview.removeChild(preview.firstChild);
     }
-  }
-}
 
-// ── Transcript Preview ────────────────────────────────────────────────────────
-function addPreviewEntry(text) {
-  entryCount++;
-  document.getElementById('entryCount').textContent = `${entryCount} entri`;
-
-  const preview = document.getElementById('transcriptPreview');
-  // Remove placeholder
-  const ph = preview.querySelector('div[style]');
-  if (ph) ph.remove();
-
-  const color = SPEAKER_COLORS[currentSpeakerIdx % SPEAKER_COLORS.length];
-  const name = speakerNames[currentSpeakerIdx] || `Speaker ${currentSpeakerIdx + 1}`;
-
-  const el = document.createElement('div');
-  el.className = 'tp-entry';
-  el.style.borderLeftColor = color;
-  el.innerHTML = `<div class="tp-meta" style="color:${color}">${escHtml(name)}</div>${escHtml(text)}`;
-  preview.appendChild(el);
-  preview.scrollTop = preview.scrollHeight;
-
-  // Keep max 20 entries in preview
-  while (preview.children.length > 20) preview.removeChild(preview.firstChild);
-}
-
-// ── Speaker Management ────────────────────────────────────────────────────────
-function renderSpeakerGrid() {
-  const grid = document.getElementById('speakerGrid');
-  grid.innerHTML = '';
-  for (let i = 0; i < speakerCount; i++) {
-    const color = SPEAKER_COLORS[i % SPEAKER_COLORS.length];
-    const name = speakerNames[i] || `Speaker ${i + 1}`;
-    const pill = document.createElement('button');
-    pill.className = `speaker-pill${i === currentSpeakerIdx ? ' active' : ''}`;
-    pill.id = `sp-${i}`;
-    pill.onclick = () => selectSpeaker(i);
-    pill.innerHTML = `<div class="speaker-dot" style="background:${color}"></div><span class="speaker-pill-name">${escHtml(name)}</span>`;
-    grid.appendChild(pill);
-  }
-}
-
-function updateActiveSpeaker() {
-  document.querySelectorAll('.speaker-pill').forEach((p, i) => p.classList.toggle('active', i === currentSpeakerIdx));
-}
-
-function selectSpeaker(idx) {
-  currentSpeakerIdx = idx;
-  updateActiveSpeaker();
-  sendToDesktop({ type: 'speaker_change', speakerIdx: idx });
-}
-
-function nextSpeaker() {
-  selectSpeaker((currentSpeakerIdx + 1) % speakerCount);
-}
-
-function markImportant() {
-  sendToDesktop({ type: 'mark_important' });
-  // Visual feedback
-  const btn = event.currentTarget;
-  btn.style.background = 'rgba(245,158,11,0.2)';
-  btn.style.borderColor = '#f59e0b';
-  setTimeout(() => { btn.style.background = ''; btn.style.borderColor = ''; }, 600);
-}
-
-// ── Language ──────────────────────────────────────────────────────────────────
-function setLang(btn) {
-  document.querySelectorAll('.lang-chip').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentLang = btn.dataset.lang;
-  sendToDesktop({ type: 'set_lang', lang: currentLang });
-  if (isRecording) {
-    // Restart recognition with new language
-    if (recognition) { try { recognition.stop(); } catch(_) {} }
-    startRecognition();
-  }
-}
-
-// ── Waveform ──────────────────────────────────────────────────────────────────
-function startWaveform(stream) {
-  const canvas = document.getElementById('mobileWaveCanvas');
-  const ctx = canvas.getContext('2d');
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const src = audioCtx.createMediaStreamSource(stream);
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 128;
-  analyser.smoothingTimeConstant = 0.8;
-  src.connect(analyser);
-  const data = new Uint8Array(analyser.frequencyBinCount);
-
-  function resize() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.scale(dpr, dpr);
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
-  }
-  resize();
-
-  function draw() {
-    waveAnimFrame = requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(data);
-    const w = canvas.width / (window.devicePixelRatio || 1);
-    const h = canvas.height / (window.devicePixelRatio || 1);
-    ctx.clearRect(0, 0, w, h);
-    const barW = w / data.length * 2;
-    const grad = ctx.createLinearGradient(0, 0, w, 0);
-    grad.addColorStop(0, '#00d4aa'); grad.addColorStop(1, '#7c3aed');
-    ctx.fillStyle = grad; ctx.globalAlpha = 0.8;
-    let x = 0;
-    for (let i = 0; i < data.length; i++) {
-      const barH = (data[i] / 255) * h * 0.85;
-      ctx.fillRect(x, (h - barH) / 2, barW - 1, barH);
-      x += barW + 0.5;
+    // ── Speaker Management ────────────────────────────────────────────────────────
+    function renderSpeakerGrid() {
+      const grid = document.getElementById('speakerGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < speakerCount; i++) {
+        const color = SPEAKER_COLORS[i % SPEAKER_COLORS.length];
+        const name = speakerNames[i] || `Speaker ${i + 1}`;
+        const pill = document.createElement('button');
+        pill.className = `speaker-pill${i === currentSpeakerIdx ? ' active' : ''}`;
+        pill.id = `sp-${i}`;
+        pill.onclick = () => selectSpeaker(i);
+        pill.innerHTML = `<div class="speaker-dot" style="background:${color}"></div><span class="speaker-pill-name">${escHtml(name)}</span>`;
+        grid.appendChild(pill);
+      }
     }
-    ctx.globalAlpha = 1;
-  }
-  draw();
-}
 
-function stopWaveform() {
-  if (waveAnimFrame) { cancelAnimationFrame(waveAnimFrame); waveAnimFrame = null; }
-  if (analyser) { analyser.disconnect(); analyser = null; }
-  if (audioCtx) { audioCtx.close(); audioCtx = null; }
-  const canvas = document.getElementById('mobileWaveCanvas');
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width / (window.devicePixelRatio || 1);
-  const h = canvas.height / (window.devicePixelRatio || 1);
-  ctx.clearRect(0, 0, w, h);
-  ctx.strokeStyle = 'rgba(0,212,170,0.2)';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke();
-}
+    function updateActiveSpeaker() {
+      document.querySelectorAll('.speaker-pill').forEach((p, i) => p.classList.toggle('active', i === currentSpeakerIdx));
+    }
 
-// ── UI Helpers ────────────────────────────────────────────────────────────────
-function setStatus(state, text) {
-  const dot = document.getElementById('statusDot');
-  dot.className = 'status-dot ' + state;
-  document.getElementById('statusText').textContent = text;
-}
+    function selectSpeaker(idx) {
+      currentSpeakerIdx = idx;
+      updateActiveSpeaker();
+      sendToDesktop({ type: 'speaker_change', speakerIdx: idx });
+    }
 
-function showError(msg) {
-  const b = document.getElementById('errorBanner');
-  b.textContent = '⚠ ' + msg;
-  b.classList.add('show');
-  setTimeout(() => b.classList.remove('show'), 5000);
-}
+    function nextSpeaker() {
+      selectSpeaker((currentSpeakerIdx + 1) % speakerCount);
+    }
 
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+    function markImportant() {
+      sendToDesktop({ type: 'mark_important' });
+      // Visual feedback
+      const btn = event.currentTarget;
+      btn.style.background = 'rgba(245,158,11,0.2)';
+      btn.style.borderColor = '#f59e0b';
+      setTimeout(() => { btn.style.background = ''; btn.style.borderColor = ''; }, 600);
+    }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-// Default speaker grid (will be updated from desktop)
-speakerCount = 2;
-speakerNames = ['Speaker 1', 'Speaker 2'];
-renderSpeakerGrid();
-connectWS();
+    // ── Language ──────────────────────────────────────────────────────────────────
+    function setLang(btn) {
+      document.querySelectorAll('.lang-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentLang = btn.dataset.lang;
+      sendToDesktop({ type: 'set_lang', lang: currentLang });
+      if (isRecording) {
+        // Restart recognition with new language
+        if (recognition) { try { recognition.stop(); } catch (_) { } }
+        startRecognition();
+      }
+    }
 
-// Handle visibility change (phone screen off/on)
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && !wsConnected) connectWS();
-});
+    // ── Waveform ──────────────────────────────────────────────────────────────────
+    function startWaveform(stream) {
+      const canvas = document.getElementById('mobileWaveCanvas');
+      const ctx = canvas.getContext('2d');
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = audioCtx.createMediaStreamSource(stream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = 0.8;
+      src.connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
 
-// Prevent sleep on mobile while recording (best effort)
-let wakeLock = null;
-async function requestWakeLock() {
-  if ('wakeLock' in navigator) {
-    try { wakeLock = await navigator.wakeLock.request('screen'); } catch (_) {}
-  }
-}
-document.getElementById('micBtn').addEventListener('click', () => {
-  if (!isRecording) requestWakeLock();
-  else if (wakeLock) { wakeLock.release(); wakeLock = null; }
-});
-</script>
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+      }
+      resize();
+
+      function draw() {
+        waveAnimFrame = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(data);
+        const w = canvas.width / (window.devicePixelRatio || 1);
+        const h = canvas.height / (window.devicePixelRatio || 1);
+        ctx.clearRect(0, 0, w, h);
+        const barW = w / data.length * 2;
+        ctx.fillStyle = '#3b82f6';
+        ctx.globalAlpha = 1;
+        let x = 0;
+        for (let i = 0; i < data.length; i++) {
+          const barH = (data[i] / 255) * h * 0.85;
+          ctx.fillRect(x, (h - barH) / 2, barW - 1, barH);
+          x += barW + 0.5;
+        }
+      }
+      draw();
+    }
+
+    function stopWaveform() {
+      if (waveAnimFrame) { cancelAnimationFrame(waveAnimFrame); waveAnimFrame = null; }
+      if (analyser) { analyser.disconnect(); analyser = null; }
+      if (audioCtx) { audioCtx.close(); audioCtx = null; }
+      const canvas = document.getElementById('mobileWaveCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#2d374d';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
+    }
+
+    // ── UI Helpers ────────────────────────────────────────────────────────────────
+    function setStatus(state, text) {
+      const dot = document.getElementById('statusDot');
+      dot.className = 'status-dot ' + state;
+      document.getElementById('statusText').textContent = text;
+    }
+
+    function showError(msg) {
+      const b = document.getElementById('errorBanner');
+      b.textContent = '⚠ ' + msg;
+      b.classList.add('show');
+      setTimeout(() => b.classList.remove('show'), 5000);
+    }
+
+    function escHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────────
+    // Default speaker grid (will be updated from desktop)
+    speakerCount = 2;
+    speakerNames = ['Speaker 1', 'Speaker 2'];
+    renderSpeakerGrid();
+    connectWS();
+
+    // Handle visibility change (phone screen off/on)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !wsConnected) connectWS();
+    });
+
+    // Prevent sleep on mobile while recording (best effort)
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if ('wakeLock' in navigator) {
+        try { wakeLock = await navigator.wakeLock.request('screen'); } catch (_) { }
+      }
+    }
+    document.getElementById('micBtn').addEventListener('click', () => {
+      if (!isRecording) requestWakeLock();
+      else if (wakeLock) { wakeLock.release(); wakeLock = null; }
+    });
+  </script>
 </body>
+
 </html>
