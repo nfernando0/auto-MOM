@@ -268,6 +268,10 @@ async function startMeeting() {
   // Start waveform
   await Waveform.start();
 
+  // Sync speakers with mobile
+  MobileBridge.updateSpeakerConfig(speakerCount, speakerNames);
+  MobileBridge.setMobileSpeaker(currentSpeakerIdx);
+
   Store.saveCurrentMeeting();
   renderMeetingList();
   showToast('🎙 Recording dimulai!', 'success');
@@ -329,6 +333,7 @@ function stopMeeting() {
   clearInterval(timerInterval);
   Transcription.stop();
   Waveform.stop();
+  MobileBridge.stopMobile();
 
   $('recordingBadge').classList.add('hidden');
   $('interimDisplay').textContent = '';
@@ -486,6 +491,7 @@ function renderSpeakerList() {
       currentSpeakerIdx = i;
       Transcription.setSpeaker(i);
       updateActiveSpeaker();
+      MobileBridge.setMobileSpeaker(i);
     });
     list.appendChild(el);
   }
@@ -502,6 +508,7 @@ function updateActiveSpeaker() {
 function switchToNextSpeaker() {
   currentSpeakerIdx = Transcription.nextSpeaker();
   updateActiveSpeaker();
+  MobileBridge.setMobileSpeaker(currentSpeakerIdx);
   const name = speakerNames[currentSpeakerIdx] || `Speaker ${currentSpeakerIdx + 1}`;
   showToast(`🎙 Pindah ke ${name}`, 'info');
 }
@@ -516,6 +523,7 @@ function promptSpeakerName() {
       Store.state.currentMeeting.speakerNames = [...speakerNames];
     }
     renderSpeakerList();
+    MobileBridge.updateSpeakerConfig(speakerCount, speakerNames);
   }
 }
 
@@ -781,3 +789,166 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') stopMeeting();
   }
 });
+
+// =====================================================================
+// MOBILE COMPANION BRIDGE
+// =====================================================================
+function initMobileBridge() {
+  const qrPlaceholder = $('qrPlaceholder');
+  const qrCanvas = $('qrCanvas');
+  const mobileBadge = $('mobileBadge');
+  const mobileUrlText = $('mobileUrlText');
+  const mobileUrlCopy = $('mobileUrlCopy');
+  const mobileConnectedInfo = $('mobileConnectedInfo');
+  const mobileConnTitle = $('mobileConnTitle');
+
+  // Copy button handler
+  if (mobileUrlCopy) {
+    mobileUrlCopy.addEventListener('click', () => {
+      const url = mobileUrlText.getAttribute('data-full-url') || mobileUrlText.textContent;
+      if (url && url !== '—') {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('📋 URL HP disalin ke clipboard!', 'success');
+        }).catch(() => {
+          showToast('Gagal menyalin URL', 'warning');
+        });
+      }
+    });
+  }
+
+  // Check server info & QR
+  const apiBase = (location.protocol === 'file:' || location.hostname === '') ? 'http://localhost:3000' : '';
+
+  fetch(`${apiBase}/api/info`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.qrDataUrl) {
+        if (qrPlaceholder) qrPlaceholder.style.display = 'none';
+        let qrImg = $('qrImg');
+        if (!qrImg) {
+          qrImg = document.createElement('img');
+          qrImg.id = 'qrImg';
+          qrImg.className = 'qr-image';
+          qrCanvas.parentNode.insertBefore(qrImg, qrCanvas);
+        }
+        qrImg.src = data.qrDataUrl;
+        qrImg.alt = 'QR Code HP';
+        qrImg.style.display = 'block';
+        qrCanvas.style.display = 'none';
+      }
+
+      const activeMobileUrl = data.mobileHttpsUrl || data.mobileUrl;
+      if (mobileUrlText) {
+        mobileUrlText.textContent = activeMobileUrl;
+        mobileUrlText.setAttribute('data-full-url', activeMobileUrl);
+        mobileUrlText.title = activeMobileUrl;
+      }
+    })
+    .catch(() => {
+      if (qrPlaceholder) {
+        qrPlaceholder.innerHTML = `
+          <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;padding:8px">
+            <div>⚡ <strong>Hubungkan HP:</strong></div>
+            <div style="margin-top:4px">Jalankan <code>node server.js</code> di terminal</div>
+            <div style="margin-top:2px">Lalu refresh halaman</div>
+          </div>
+        `;
+      }
+      if (mobileBadge) {
+        mobileBadge.textContent = 'Server Offline';
+        mobileBadge.className = 'mobile-status-badge offline';
+      }
+    });
+
+  // Connect WebSocket
+  MobileBridge.connect({
+    onStatusChange: (status) => {
+      if (status === 'connected') {
+        if (mobileBadge && !mobileBadge.classList.contains('connected')) {
+          mobileBadge.textContent = 'Server Siap';
+          mobileBadge.className = 'mobile-status-badge ready';
+        }
+      } else if (status === 'disconnected') {
+        if (mobileBadge) {
+          mobileBadge.textContent = 'Offline';
+          mobileBadge.className = 'mobile-status-badge offline';
+        }
+        if (mobileConnectedInfo) mobileConnectedInfo.classList.add('hidden');
+      }
+    },
+    onMobileConnect: (count) => {
+      mobileConnected = count > 0;
+      if (mobileBadge) {
+        mobileBadge.textContent = `${count} HP Online`;
+        mobileBadge.className = 'mobile-status-badge connected';
+      }
+      if (mobileConnectedInfo) {
+        mobileConnectedInfo.classList.remove('hidden');
+        if (mobileConnTitle) mobileConnTitle.textContent = `${count} HP Terhubung`;
+      }
+      showToast(`📱 HP terhubung! (${count} perangkat)`, 'success');
+      MobileBridge.updateSpeakerConfig(speakerCount, speakerNames);
+      MobileBridge.setMobileSpeaker(currentSpeakerIdx);
+    },
+    onMobileDisconnect: (count) => {
+      mobileConnected = count > 0;
+      if (count > 0) {
+        if (mobileBadge) {
+          mobileBadge.textContent = `${count} HP Online`;
+          mobileBadge.className = 'mobile-status-badge connected';
+        }
+        if (mobileConnectedInfo && mobileConnTitle) {
+          mobileConnTitle.textContent = `${count} HP Terhubung`;
+        }
+      } else {
+        if (mobileBadge) {
+          mobileBadge.textContent = 'Server Siap';
+          mobileBadge.className = 'mobile-status-badge ready';
+        }
+        if (mobileConnectedInfo) mobileConnectedInfo.classList.add('hidden');
+        showToast('📱 HP terputus', 'warning');
+      }
+    },
+    onTranscript: (msg) => {
+      handleMobileTranscript(msg);
+    },
+    onMarkImportant: () => {
+      markLastEntry();
+      showToast('⭐ Poin ditandai penting oleh HP', 'info');
+    },
+    onSpeakerChange: (idx) => {
+      if (typeof idx === 'number' && idx >= 0 && idx < speakerCount) {
+        currentSpeakerIdx = idx;
+        Transcription.setSpeaker(idx);
+        updateActiveSpeaker();
+        const name = speakerNames[currentSpeakerIdx] || `Speaker ${currentSpeakerIdx + 1}`;
+        showToast(`📱 HP mengganti ke: ${name}`, 'info');
+      }
+    }
+  });
+}
+
+function handleMobileTranscript(msg) {
+  const meeting = Store.state.currentMeeting;
+  if (!meeting || meeting.status !== 'active') {
+    showToast(`📱 HP: "${msg.text.slice(0, 30)}..." (Mulai meeting di desktop untuk merekam)`, 'warning', 4000);
+    return;
+  }
+
+  const sIdx = (typeof msg.speakerIdx === 'number') ? msg.speakerIdx : currentSpeakerIdx;
+  const sName = msg.speakerName || speakerNames[sIdx] || `Speaker ${sIdx + 1}`;
+  const entry = Store.addTranscriptEntry(sIdx, sName, msg.text, recordingSeconds);
+  if (!entry) return;
+
+  renderTranscriptEntry(entry);
+
+  const el = $(`entry-${entry.id}`);
+  if (el) {
+    el.classList.add('mobile-source');
+  }
+
+  if (meeting.transcript.length % 10 === 0) {
+    Store.saveCurrentMeeting();
+  }
+}
+

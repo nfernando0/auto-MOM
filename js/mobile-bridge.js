@@ -9,8 +9,14 @@ const MobileBridge = (() => {
   let mobileCount = 0;
   let reconnectTimer = null;
   let reconnectAttempts = 0;
-  const MAX_RECONNECT = 20;
-  const WS_URL = `ws://${location.host}?role=desktop`;
+  const MAX_RECONNECT = 50;
+
+  function getWsUrl() {
+    const isHttps = location.protocol === 'https:';
+    const proto = isHttps ? 'wss:' : 'ws:';
+    const host = location.host || 'localhost:3000';
+    return `${proto}//${host}?role=desktop`;
+  }
 
   // Callbacks
   let onTranscript = null;
@@ -32,12 +38,18 @@ const MobileBridge = (() => {
 
   function tryConnect() {
     if (ws) { try { ws.close(); } catch(_) {} }
-    ws = new WebSocket(WS_URL);
+    try {
+      ws = new WebSocket(getWsUrl());
+    } catch (_) {
+      scheduleReconnect();
+      return;
+    }
 
     ws.onopen = () => {
       isConnected = true;
       reconnectAttempts = 0;
       if (onStatusChange) onStatusChange('connected');
+      sendSpeakerConfig();
     };
 
     ws.onmessage = (ev) => {
@@ -62,7 +74,7 @@ const MobileBridge = (() => {
     clearTimeout(reconnectTimer);
     reconnectAttempts++;
     if (reconnectAttempts > MAX_RECONNECT) return;
-    const delay = Math.min(500 * reconnectAttempts, 4000);
+    const delay = Math.min(1000 * reconnectAttempts, 4000);
     reconnectTimer = setTimeout(tryConnect, delay);
   }
 
@@ -71,13 +83,13 @@ const MobileBridge = (() => {
       case 'mobile_connected':
         mobileCount = msg.count || 1;
         if (onMobileConnect) onMobileConnect(mobileCount);
+        sendSpeakerConfig();
         break;
       case 'mobile_disconnected':
         mobileCount = msg.count || 0;
         if (onMobileDisconnect) onMobileDisconnect(mobileCount);
         break;
       case 'mobile_ready':
-        // HP siap, kirim config
         sendSpeakerConfig();
         break;
       case 'transcript':
@@ -101,18 +113,6 @@ const MobileBridge = (() => {
     }
   }
 
-  function sendSpeakerConfig() {
-    // Will be called by app.js with current speaker data
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      sendToMobile({
-        type: 'set_speakers',
-        count: _speakerCount,
-        names: _speakerNames,
-      });
-    }
-  }
-
-  // Internal refs updated by app.js
   let _speakerCount = 2;
   let _speakerNames = [];
 
@@ -122,14 +122,23 @@ const MobileBridge = (() => {
     sendSpeakerConfig();
   }
 
+  function sendSpeakerConfig() {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      sendToMobile({
+        type: 'set_speakers',
+        count: _speakerCount,
+        names: _speakerNames,
+      });
+    }
+  }
+
   function stopMobile() { sendToMobile({ type: 'stop_recording' }); }
   function setMobileSpeaker(idx) { sendToMobile({ type: 'set_speaker', idx }); }
-
   function getIsConnected() { return isConnected; }
   function getMobileCount() { return mobileCount; }
 
   return {
     connect, sendToMobile, stopMobile, setMobileSpeaker,
-    updateSpeakerConfig, getIsConnected, getMobileCount,
+    updateSpeakerConfig, sendSpeakerConfig, getIsConnected, getMobileCount,
   };
 })();

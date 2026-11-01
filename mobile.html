@@ -390,7 +390,8 @@
 
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const WS_URL = `ws://${location.host}?role=mobile`;
+const WS_PROTO = location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_URL = `${WS_PROTO}//${location.host}?role=mobile`;
 const SPEAKER_COLORS = ['#00d4aa','#7c3aed','#f59e0b','#f43f5e','#3b82f6','#ec4899'];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -571,19 +572,20 @@ async function toggleRecording() {
 }
 
 async function startRecording() {
-  // Request mic permission
+  // Request mic permission for waveform if supported
   try {
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      startWaveform(micStream);
+    }
   } catch (e) {
-    showError('Akses mikrofon ditolak. Izinkan akses mic di pengaturan browser.');
-    return;
+    console.warn('Waveform audio stream unavailable:', e);
   }
 
   isRecording = true;
   isPaused = false;
   updateMicUI(true);
   startRecognition();
-  startWaveform(micStream);
   sendToDesktop({ type: 'recording_started', speakerIdx: currentSpeakerIdx });
 }
 
